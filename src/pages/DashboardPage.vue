@@ -15,6 +15,10 @@ const recentUsers = computed(() => user.users.slice(0, 5));
 
 onMounted(() => {
   if (user.isAdmin) {
+    user.currentPage = 1;
+    user.search = "";
+    user.sortBy = "createdAt";
+    user.sortDesc = false;
     user.fetchUsers();
   }
 });
@@ -23,6 +27,10 @@ watch(
   () => user.isAdmin,
   (isAdmin) => {
     if (isAdmin && user.totalUsers === null) {
+      user.currentPage = 1;
+      user.search = "";
+      user.sortBy = "createdAt";
+      user.sortDesc = false;
       user.fetchUsers();
     }
   },
