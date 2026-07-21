@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppButton: typeof import('./src/components/ui/AppButton.vue')['default']
+    AppCard: typeof import('./src/components/ui/AppCard.vue')['default']
     AppHeader: typeof import('./src/components/ui/AppHeader.vue')['default']
     AppInput: typeof import('./src/components/ui/AppInput.vue')['default']
     AppLink: typeof import('./src/components/ui/AppLink.vue')['default']
@@ -20,6 +21,7 @@ declare module 'vue' {
     AppSelect: typeof import('./src/components/ui/AppSelect.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UApp: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
     UBadge: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Badge.vue')['default']
     UButton: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
     UFormField: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/FormField.vue')['default']
@@ -29,5 +31,7 @@ declare module 'vue' {
     UModal: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Modal.vue')['default']
     UPagination: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Pagination.vue')['default']
     USelect: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Select.vue')['default']
+    UserAvatar: typeof import('./src/components/ui/UserAvatar.vue')['default']
+    UserListItem: typeof import('./src/components/ui/UserListItem.vue')['default']
   }
 }

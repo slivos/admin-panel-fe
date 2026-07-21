@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { useUserStore } from "../stores/user.ts";
+import { useChangePasswordStore } from "../stores/changePassword.ts";
 import AppHeader from "../components/ui/AppHeader.vue";
+import AppCard from "../components/ui/AppCard.vue";
 
 const router = useRouter();
 const user = useUserStore();
+const changePassword = useChangePasswordStore();
 </script>
 
 <template>
@@ -29,9 +32,9 @@ const user = useUserStore();
         </p>
       </div>
 
-      <div
+      <AppCard
         v-if="user.profile"
-        class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 max-w-md"
+        class="max-w-md"
       >
         <dl class="divide-y divide-gray-100 dark:divide-gray-800">
           <div class="py-4 first:pt-0 last:pb-0 flex flex-col gap-1">
@@ -53,7 +56,7 @@ const user = useUserStore();
             </dd>
           </div>
         </dl>
-      </div>
+      </AppCard>
 
       <div v-else-if="user.loading" class="text-gray-500 dark:text-gray-400">
         Loading…
@@ -62,6 +65,58 @@ const user = useUserStore();
       <div v-else-if="user.error" class="text-red-500">
         {{ user.error }}
       </div>
+
+      <AppCard class="mt-8 max-w-md">
+        <div class="mb-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Change password</h2>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Update your account password.
+          </p>
+        </div>
+
+        <form class="space-y-5" novalidate @submit.prevent="changePassword.changePassword">
+          <AppInput
+            v-model="changePassword.currentPassword"
+            label="Current password"
+            type="password"
+            placeholder="Enter current password"
+            autocomplete="current-password"
+            :error="changePassword.fieldErrors.currentPassword"
+            required
+          />
+          <AppInput
+            v-model="changePassword.newPassword"
+            label="New password"
+            type="password"
+            placeholder="Enter new password"
+            autocomplete="new-password"
+            :error="changePassword.fieldErrors.newPassword"
+            required
+          />
+          <AppInput
+            v-model="changePassword.confirmNewPassword"
+            label="Confirm new password"
+            type="password"
+            placeholder="Confirm new password"
+            autocomplete="new-password"
+            :error="changePassword.fieldErrors.confirmNewPassword"
+            required
+          />
+          <p
+            v-if="changePassword.serverError"
+            class="text-sm text-red-600 dark:text-red-400"
+          >
+            {{ changePassword.serverError }}
+          </p>
+          <AppButton
+            type="submit"
+            label="Change password"
+            :loading="changePassword.loading"
+            :block="true"
+            size="lg"
+          />
+        </form>
+      </AppCard>
     </main>
   </div>
 </template>

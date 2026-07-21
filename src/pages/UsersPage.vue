@@ -2,8 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../stores/user.ts";
-import type { UserSummary } from "../stores/user.ts";
-import { initials } from "../helpers/string.ts";
+import type { UserSummary } from "../types/user.ts";
 import { debounce } from "../helpers/debounce.ts";
 import AppHeader from "../components/ui/AppHeader.vue";
 import AppButton from "../components/ui/AppButton.vue";
@@ -11,6 +10,7 @@ import AppInput from "../components/ui/AppInput.vue";
 import AppModal from "../components/ui/AppModal.vue";
 import AppSelect from "../components/ui/AppSelect.vue";
 import AppPagination from "../components/ui/AppPagination.vue";
+import UserListItem from "../components/ui/UserListItem.vue";
 
 const router = useRouter();
 const user = useUserStore();
@@ -162,94 +162,41 @@ async function submitDelete() {
         v-else-if="user.users.length"
         class="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white shadow-sm dark:divide-gray-800 dark:border-gray-800 dark:bg-gray-900"
       >
-        <li
+        <UserListItem
           v-for="u in user.users"
           :key="u.id"
-          class="group relative flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+          :user="u"
+          :current-user-id="user.profile?.id"
+          :clickable="true"
+          :show-date="true"
+          @click="navigateToUser(u.id)"
         >
-          <!-- Clickable area (left side) -->
-          <button
-            type="button"
-            class="flex flex-1 min-w-0 items-center gap-4 text-left"
-            @click="navigateToUser(u.id)"
-          >
-            <!-- Initials avatar -->
-            <span
-              class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-700 dark:bg-primary-900 dark:text-primary-300"
-            >
-              {{ initials(u.displayName) }}
-            </span>
-
-            <!-- Name + email -->
-            <div class="min-w-0 flex-1">
-              <p
-                class="truncate text-sm font-medium text-gray-900 dark:text-white"
-              >
-                {{ u.displayName }}
-              </p>
-              <p class="truncate text-xs text-gray-500 dark:text-gray-400">
-                {{ u.email }}
-              </p>
-            </div>
-
-            <!-- Role badge -->
-            <UBadge
-              :label="u.role"
-              :color="u.role === 'Admin' ? 'primary' : 'neutral'"
-              variant="subtle"
-              size="sm"
-              class="shrink-0"
+          <template v-if="u.id !== user.profile?.id" #actions>
+            <!-- Edit -->
+            <UButton
+              icon="i-lucide-pencil"
+              size="xs"
+              color="neutral"
+              variant="ghost"
+              aria-label="Edit user"
+              @click.stop="openEdit(u)"
             />
-
-            <!-- "Me" badge -->
-            <UBadge
-              v-if="u.id === user.profile?.id"
-              label="Me"
-              color="info"
-              variant="subtle"
-              size="sm"
-              class="shrink-0"
+            <!-- Delete -->
+            <UButton
+              icon="i-lucide-trash-2"
+              size="xs"
+              color="error"
+              variant="ghost"
+              aria-label="Delete user"
+              @click.stop="openDelete(u)"
             />
-
-            <!-- Created at -->
-            <span
-              class="hidden shrink-0 text-xs text-gray-400 dark:text-gray-500 sm:block"
-            >
-              {{ new Date(u.createdAt).toLocaleDateString() }}
-            </span>
-          </button>
-
-          <!-- Hover actions -->
-          <div
-            class="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100"
-          >
-            <template v-if="u.id !== user.profile?.id">
-              <!-- Edit -->
-              <UButton
-                icon="i-lucide-pencil"
-                size="xs"
-                color="neutral"
-                variant="ghost"
-                aria-label="Edit user"
-                @click.stop="openEdit(u)"
-              />
-              <!-- Delete -->
-              <UButton
-                icon="i-lucide-trash-2"
-                size="xs"
-                color="error"
-                variant="ghost"
-                aria-label="Delete user"
-                @click.stop="openDelete(u)"
-              />
-            </template>
+          </template>
+          <template v-else #actions>
             <!-- Placeholder to preserve width for current user row -->
-            <template v-else>
-              <span class="size-[24px]" />
-              <span class="size-[24px]" />
-            </template>
-          </div>
-        </li>
+            <span class="size-[24px]" />
+            <span class="size-[24px]" />
+          </template>
+        </UserListItem>
       </ul>
 
       <!-- Empty state -->

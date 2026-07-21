@@ -2,33 +2,14 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { http } from "../api/http.ts";
 import type { AxiosError } from "axios";
+import type { UserSummary, SortField, PagedResult } from "../types/user.ts";
+import { UserRole } from "../types/user.ts";
+import { useToast } from "@nuxt/ui/composables/useToast";
 
-export const UserRole = {
-  Admin: "Admin",
-  User: "User",
-} as const;
-
-export type UserRole = (typeof UserRole)[keyof typeof UserRole];
-
-export interface UserSummary {
-  id: string;
-  email: string;
-  displayName: string;
-  role: UserRole;
-  createdAt: string;
-}
-
-export type SortField = "email" | "displayName" | "role" | "createdAt";
-
-interface PagedResult<T> {
-  items: T[];
-  totalCount: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
+export type { UserRole, UserSummary, SortField, PagedResult };
 
 export const useUserStore = defineStore("user", () => {
+  const toast = useToast();
   const profile = ref<UserSummary | null>(null);
   const loading = ref(false);
   const error = ref("");
@@ -125,6 +106,7 @@ export const useUserStore = defineStore("user", () => {
     actionError.value = "";
     try {
       await http.delete(`/users/${id}`);
+      toast.add({ title: "User deleted successfully.", color: "success" });
       await fetchUsers();
     } catch (err) {
       const axiosErr = err as AxiosError<{ message?: string }>;

@@ -3,8 +3,9 @@ import { onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "../stores/user.ts";
-import { initials } from "../helpers/string.ts";
 import AppHeader from "../components/ui/AppHeader.vue";
+import AppCard from "../components/ui/AppCard.vue";
+import UserAvatar from "../components/ui/UserAvatar.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -53,12 +54,8 @@ onMounted(() => {
       <!-- Content -->
       <template v-else-if="detail">
         <div class="mb-8 flex items-center gap-4">
-          <!-- Initials avatar -->
-          <span
-            class="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary-100 text-xl font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-300"
-          >
-            {{ initials(detail.displayName) }}
-          </span>
+          <!-- Avatar -->
+          <UserAvatar :name="detail.displayName" size="lg" />
 
           <div>
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
@@ -76,9 +73,7 @@ onMounted(() => {
         </div>
 
         <!-- Detail card -->
-        <div
-          class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 max-w-lg"
-        >
+        <AppCard class="max-w-lg">
           <dl class="divide-y divide-gray-100 dark:divide-gray-800">
             <div class="py-4 first:pt-0 last:pb-0 flex flex-col gap-1">
               <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Display Name</dt>
@@ -115,7 +110,7 @@ onMounted(() => {
               </dd>
             </div>
           </dl>
-        </div>
+        </AppCard>
       </template>
     </main>
   </div>
